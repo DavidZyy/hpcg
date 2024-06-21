@@ -20,6 +20,11 @@
 
 #include "ComputeDotProduct.hpp"
 #include "ComputeDotProduct_ref.hpp"
+#include "ComputeDotProduct_cuda.hpp"
+#include "ComputeDotProduct_avx.hpp"
+#include <cassert>
+#include <cstdio>
+#include <cmath>
 
 /*!
   Routine to compute the dot product of two vectors.
@@ -43,5 +48,27 @@ int ComputeDotProduct(const local_int_t n, const Vector & x, const Vector & y,
 
   // This line and the next two lines should be removed and your version of ComputeDotProduct should be used.
   isOptimized = false;
+
   return ComputeDotProduct_ref(n, x, y, result, time_allreduce);
+  // return ComputeDotProduct_cuda(n, x, y, result, time_allreduce);
+  // return ComputeDotProduct_avx(n, x, y, result, time_allreduce);
+
+
+  // test
+  // Define a tolerance value，允许有一定的误差
+//   double tolerance = 1e-6;
+//   double result_ref, result_cuda, result_avx;
+// 
+//   ComputeDotProduct_ref(n, x, y, result_ref, time_allreduce);
+// 
+//   // ComputeDotProduct_cuda(n, x, y, result_cuda, time_allreduce);
+//   // printf("Dot product result_ref = %10f, result_cuda = %10f\n", result_ref, result_cuda);
+//   // assert(fabs(result_ref - result_cuda) < tolerance);
+// 
+//   ComputeDotProduct_avx(n, x, y, result_avx, time_allreduce);
+//   printf("Dot product result_ref = %10f, result_avx = %10f\n", result_ref, result_avx);
+//   assert(fabs(result_ref - result_avx) < tolerance);
+// 
+//   // ComputeDotProduct_ref(n, x, y, result, time_allreduce);
+//   return 0;
 }

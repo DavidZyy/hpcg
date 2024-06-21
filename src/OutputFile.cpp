@@ -17,8 +17,11 @@
 #include <list>
 #include <sstream>
 #include <string>
+#include "iostream"
 
 #include "OutputFile.hpp"
+
+using namespace std;
 
 using std::string;
 using std::stringstream;
@@ -104,6 +107,7 @@ OutputFile::generateRecursive(string prefix) {
 
 string
 OutputFile::generate(void) {
+    // printf("generate doc here!\n");
   string result = name + "\nversion=" + version + eol;
 
   for (list<OutputFile*>::iterator it = descendants.begin(); it != descendants.end(); ++it) {
@@ -121,6 +125,7 @@ OutputFile::generate(void) {
   string filename = name + "_" + version + "_";
   filename += string(sdate) + ".txt";
 
+  // cout << "Writing output to file " << filename << endl;
   ofstream myfile(filename.c_str());
   myfile << result;
   myfile.close();

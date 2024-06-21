@@ -21,6 +21,7 @@
 // Main routine of a program that calls the HPCG conjugate gradient
 // solver to solve the problem, and then prints results.
 
+#include <cstdio>
 #ifndef HPCG_NO_MPI
 #include <mpi.h>
 #endif
@@ -74,7 +75,10 @@ int main(int argc, char * argv[]) {
 
 #ifndef HPCG_NO_MPI
   MPI_Init(&argc, &argv);
+  printf("MPI Initialized\n");
 #endif
+
+  printf("hello, i'here!\n");
 
   HPCG_Params params;
 
@@ -87,6 +91,7 @@ int main(int argc, char * argv[]) {
   int size = params.comm_size, rank = params.comm_rank; // Number of MPI processes, My process ID
 
 #ifdef HPCG_DETAILED_DEBUG
+  printf("size: %d, rank: %d\n", size, rank);
   if (size < 100 && rank==0) HPCG_fout << "Process "<<rank<<" of "<<size<<" is alive with " << params.numThreads << " threads." <<endl;
 
   if (rank==0) {

@@ -83,6 +83,7 @@ int ComputeSYMGS_ref( const SparseMatrix & A, const Vector & r, Vector & x) {
 
   // Now the back sweep.
 
+  // 这个循环和上面的循环操作一样，只是方向相反
   for (local_int_t i=nrow-1; i>=0; i--) {
     const double * const currentValues = A.matrixValues[i];
     const local_int_t * const currentColIndices = A.mtxIndL[i];

@@ -153,6 +153,7 @@ HPCG_Init(int * argc_p, char ** *argv_p, HPCG_Params & params) {
       1900 + ptm->tm_year, ptm->tm_mon+1, ptm->tm_mday, ptm->tm_hour, ptm->tm_min, ptm->tm_sec );
 
   if (0 == params.comm_rank) {
+    printf("params.comm_rank: %d\n", params.comm_rank);
     HPCG_fout.open(fname);
   } else {
 #if defined(HPCG_DEBUG) || defined(HPCG_DETAILED_DEBUG)

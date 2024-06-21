@@ -60,8 +60,8 @@ int ComputeSPMV_ref( const SparseMatrix & A, Vector & x, Vector & y) {
 #endif
   for (local_int_t i=0; i< nrow; i++)  {
     double sum = 0.0;
-    const double * const cur_vals = A.matrixValues[i];
-    const local_int_t * const cur_inds = A.mtxIndL[i];
+    const double * const cur_vals = A.matrixValues[i]; //得到第i行值所在的数组
+    const local_int_t * const cur_inds = A.mtxIndL[i]; //得到第i行的列索引所在的数组
     const int cur_nnz = A.nonzerosInRow[i];
 
     for (int j=0; j< cur_nnz; j++)

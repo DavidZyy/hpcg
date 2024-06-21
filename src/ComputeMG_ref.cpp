@@ -27,7 +27,7 @@
 #include <iostream>
 
 /*!
-
+  多重网格法 (Multigrid Method)
   @param[in] A the known system matrix
   @param[in] r the input vector
   @param[inout] x On exit contains the result of the multigrid V-cycle with r as the RHS, x is the approximation to Ax = r.
