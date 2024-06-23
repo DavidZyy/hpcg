@@ -46,7 +46,9 @@ HPCG_DEPS = src/CG.o \
 	    src/init.o \
 	    src/finalize.o \
 		src/ComputeDotProduct_cuda.o \
-		src/ComputeDotProduct_avx.o
+		src/ComputeDotProduct_avx.o \
+		src/ComputeWAXPBY_avx.o \
+		src/ComputeSPMV_avx.o
 
 # These header files are included in many source files, so we recompile every file if one or more of these header is modified.
 PRIMARY_HEADERS = ../src/Geometry.hpp ../src/SparseMatrix.hpp ../src/Vector.hpp ../src/CGData.hpp \
@@ -193,4 +195,11 @@ src/ComputeDotProduct_cuda.o: ../src/ComputeDotProduct_cuda.cu ../src/ComputeDot
 
 
 src/ComputeDotProduct_avx.o: ../src/ComputeDotProduct_avx.cpp ../src/ComputeDotProduct_avx.hpp $(PRIMARY_HEADERS)
+	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
+
+
+src/ComputeWAXPBY_avx.o: ../src/ComputeWAXPBY_avx.cpp ../src/ComputeWAXPBY_avx.hpp $(PRIMARY_HEADERS)
+	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
+
+src/ComputeSPMV_avx.o: ../src/ComputeSPMV_avx.cpp ../src/ComputeSPMV_avx.hpp $(PRIMARY_HEADERS)
 	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@

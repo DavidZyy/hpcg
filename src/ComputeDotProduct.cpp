@@ -49,9 +49,9 @@ int ComputeDotProduct(const local_int_t n, const Vector & x, const Vector & y,
   // This line and the next two lines should be removed and your version of ComputeDotProduct should be used.
   isOptimized = false;
 
-  return ComputeDotProduct_ref(n, x, y, result, time_allreduce);
+  // return ComputeDotProduct_ref(n, x, y, result, time_allreduce);
   // return ComputeDotProduct_cuda(n, x, y, result, time_allreduce);
-  // return ComputeDotProduct_avx(n, x, y, result, time_allreduce);
+  return ComputeDotProduct_avx(n, x, y, result, time_allreduce);
 
 
   // test

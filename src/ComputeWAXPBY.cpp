@@ -20,6 +20,12 @@
 
 #include "ComputeWAXPBY.hpp"
 #include "ComputeWAXPBY_ref.hpp"
+#include "ComputeWAXPBY_avx.hpp"
+#include "Vector.hpp"
+#include <cassert>
+#include <cstdio>
+#include <cmath>
+#include <new>
 
 /*!
   Routine to compute the update of a vector with the sum of two
@@ -44,5 +50,42 @@ int ComputeWAXPBY(const local_int_t n, const double alpha, const Vector & x,
 
   // This line and the next two lines should be removed and your version of ComputeWAXPBY should be used.
   isOptimized = false;
+//   ComputeWAXPBY_ref(n, alpha, x, beta, y, w);
+// 
+//   for (local_int_t i=0; i<n; i++) {
+//     // printf("w_ref = %10f, w_avx = %10f\n", w_ref.values[i], w_avx.values[i]);
+//     printf("w = %10f\n", w.values[i]);
+//     // if (fabs(w_avx.values[i] - w_ref.values[i]) >= tolerance) {
+//     //   printf("w_ref = %10f, w_avx = %10f\n", w_ref.values[i], w_avx.values[i]);
+//     // }
+//     // assert(fabs(w_avx.values[i] - w_ref.values[i]) < tolerance);
+//   }
+//   assert(0);
+//   return 0;
   return ComputeWAXPBY_ref(n, alpha, x, beta, y, w);
+  // return ComputeWAXPBY_avx(n, alpha, x, beta, y, w);
+
+  // test
+  // Define a tolerance value，允许有一定的误差
+//   double tolerance = 1e-6;
+//   Vector w_ref, w_avx;
+//   InitializeVector(w_ref, n);
+//   InitializeVector(w_avx, n);
+// 
+//   ComputeWAXPBY_ref(n, alpha, x, beta, y, w_ref);
+// 
+//   ComputeWAXPBY_avx(n, alpha, x, beta, y, w_avx);
+// 
+//   for (local_int_t i=0; i<n; i++) {
+//     // printf("w_ref = %10f, w_avx = %10f\n", w_ref.values[i], w_avx.values[i]);
+//     assert(fabs(w_avx.values[i] - w_ref.values[i]) < tolerance);
+//     printf("w_ref = %10f, w_avx = %10f\n", w_ref.values[i], w_avx.values[i]);
+//     // if (fabs(w_avx.values[i] - w_ref.values[i]) >= tolerance) {
+//     //   printf("w_ref = %10f, w_avx = %10f\n", w_ref.values[i], w_avx.values[i]);
+//     // }
+//     // assert(fabs(w_avx.values[i] - w_ref.values[i]) < tolerance);
+//   }
+// 
+//   // return ComputeWAXPBY_ref(n, alpha, x, beta, y, w);
+//   return 0;
 }

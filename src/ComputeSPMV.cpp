@@ -20,6 +20,7 @@
 
 #include "ComputeSPMV.hpp"
 #include "ComputeSPMV_ref.hpp"
+#include "ComputeSPMV_avx.hpp"
 
 /*!
   Routine to compute sparse matrix vector product y = Ax where:
@@ -41,5 +42,6 @@ int ComputeSPMV( const SparseMatrix & A, Vector & x, Vector & y) {
 
   // This line and the next two lines should be removed and your version of ComputeSPMV should be used.
   A.isSpmvOptimized = false;
-  return ComputeSPMV_ref(A, x, y);
+  // return ComputeSPMV_ref(A, x, y);
+  return ComputeSPMV_avx(A, x, y);
 }
