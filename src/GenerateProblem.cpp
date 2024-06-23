@@ -28,6 +28,7 @@
 
 #include "GenerateProblem.hpp"
 #include "GenerateProblem_ref.hpp"
+#include "mytimer.hpp"
 
 
 /*!
@@ -41,12 +42,16 @@
   @see GenerateGeometry
 */
 
+double GenerateProblem_time = 0;
 void GenerateProblem(SparseMatrix & A, Vector * b, Vector * x, Vector * xexact) {
 
   // The call to this reference version of GenerateProblem can be replaced with custom code.
   // However, the data structures must remain unchanged such that the CheckProblem function is satisfied.
   // Furthermore, any code must work for general unstructured sparse matrices.  Special knowledge about the
   // specific nature of the sparsity pattern may not be explicitly used.
+  myTICK();
+  GenerateProblem_ref(A, b, x, xexact);
+  myTOCK(GenerateProblem_time);
 
-  return(GenerateProblem_ref(A, b, x, xexact));
+  return;
 }

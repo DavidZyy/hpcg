@@ -30,6 +30,7 @@
 
 #include "SetupHalo.hpp"
 #include "SetupHalo_ref.hpp"
+#include "mytimer.hpp"
 
 /*!
   Prepares system matrix data structure and creates data necessary necessary
@@ -39,11 +40,15 @@
 
   @see ExchangeHalo
 */
+double SetupHalo_time = 0.0;
 void SetupHalo(SparseMatrix & A) {
 
   // The call to this reference version of SetupHalo can be replaced with custom code.
   // However, any code must work for general unstructured sparse matrices.  Special knowledge about the
   // specific nature of the sparsity pattern may not be explicitly used.
+  myTICK();
+  SetupHalo_ref(A);
+  myTOCK(SetupHalo_time);
 
-  return(SetupHalo_ref(A));
+  return;
 }

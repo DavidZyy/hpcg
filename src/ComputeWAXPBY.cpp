@@ -27,6 +27,7 @@
 #include <cmath>
 #include <new>
 
+#include "mytimer.hpp"
 /*!
   Routine to compute the update of a vector with the sum of two
   scaled vectors where: w = alpha*x + beta*y
@@ -45,6 +46,7 @@
 
   @see ComputeWAXPBY_ref
 */
+double ComputeWAXPBY_time = 0;
 int ComputeWAXPBY(const local_int_t n, const double alpha, const Vector & x,
     const double beta, const Vector & y, Vector & w, bool & isOptimized) {
 
@@ -62,8 +64,12 @@ int ComputeWAXPBY(const local_int_t n, const double alpha, const Vector & x,
 //   }
 //   assert(0);
 //   return 0;
-  return ComputeWAXPBY_ref(n, alpha, x, beta, y, w);
-  // return ComputeWAXPBY_avx(n, alpha, x, beta, y, w);
+
+  myTICK();
+  // int err = ComputeWAXPBY_ref(n, alpha, x, beta, y, w);
+  int err = ComputeWAXPBY_avx(n, alpha, x, beta, y, w);
+  myTOCK(ComputeWAXPBY_time);
+  return err;
 
   // test
   // Define a tolerance value，允许有一定的误差

@@ -22,6 +22,7 @@
 #include "ComputeSPMV_ref.hpp"
 #include "ComputeSPMV_avx.hpp"
 
+#include "mytimer.hpp"
 /*!
   Routine to compute sparse matrix vector product y = Ax where:
   Precondition: First call exchange_externals to get off-processor values of x
@@ -38,10 +39,16 @@
 
   @see ComputeSPMV_ref
 */
+double ComputeSPMV_time = 0;
 int ComputeSPMV( const SparseMatrix & A, Vector & x, Vector & y) {
 
   // This line and the next two lines should be removed and your version of ComputeSPMV should be used.
   A.isSpmvOptimized = false;
-  // return ComputeSPMV_ref(A, x, y);
-  return ComputeSPMV_avx(A, x, y);
+
+  myTICK();
+  // int err = ComputeSPMV_ref(A, x, y);
+  int err = ComputeSPMV_avx(A, x, y);
+  myTOCK(ComputeSPMV_time);
+
+  return err;
 }

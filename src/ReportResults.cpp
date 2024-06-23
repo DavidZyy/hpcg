@@ -404,6 +404,23 @@ void ReportResults(const SparseMatrix & A, int numberOfMgLevels, int numberOfCgS
       doc.get("Final Summary")->add("Please review the YAML file contents","You may NOT submit these results for consideration.");
     }
 
+    // my added timer
+    extern double ComputeDotProduct_time;
+    extern double ComputeSPMV_time;
+    extern double ComputeWAXPBY_time;
+    extern double ComputeMG_time;
+    extern double ComputeSYMGS_time;
+    extern double GenerateProblem_time;
+    extern double SetupHalo_time;
+    doc.add("Function Summary","");
+    doc.get("Function Summary")->add("ComputeDotProduct time is",ComputeDotProduct_time);
+    doc.get("Function Summary")->add("ComputeSPMV time is",ComputeSPMV_time);
+    doc.get("Function Summary")->add("ComputeWAXPBY time is",ComputeWAXPBY_time);
+    doc.get("Function Summary")->add("ComputeMG time is",ComputeMG_time);
+    doc.get("Function Summary")->add("ComputeSYMGS time is",ComputeSYMGS_time);
+    doc.get("Function Summary")->add("GenerateProblem time is",GenerateProblem_time);
+    doc.get("Function Summary")->add("SetupHalo time is",SetupHalo_time);
+
     std::string yaml = doc.generate();
 #ifdef HPCG_DEBUG
     HPCG_fout << yaml;

@@ -20,6 +20,7 @@
 
 #include "ComputeSYMGS.hpp"
 #include "ComputeSYMGS_ref.hpp"
+#include "mytimer.hpp"
 
 /*!
   Routine to compute one step of symmetric Gauss-Seidel:
@@ -47,9 +48,13 @@
 
   @see ComputeSYMGS_ref
 */
+double ComputeSYMGS_time = 0;
 int ComputeSYMGS( const SparseMatrix & A, const Vector & r, Vector & x) {
 
   // This line and the next two lines should be removed and your version of ComputeSYMGS should be used.
-  return ComputeSYMGS_ref(A, r, x);
+  myTICK();
+  int err = ComputeSYMGS_ref(A, r, x);
+  myTOCK(ComputeSYMGS_time);
+  return err;
 
 }

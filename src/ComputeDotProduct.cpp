@@ -25,6 +25,7 @@
 #include <cassert>
 #include <cstdio>
 #include <cmath>
+#include "mytimer.hpp"
 
 /*!
   Routine to compute the dot product of two vectors.
@@ -43,15 +44,21 @@
 
   @see ComputeDotProduct_ref
 */
+double ComputeDotProduct_time = 0;
 int ComputeDotProduct(const local_int_t n, const Vector & x, const Vector & y,
     double & result, double & time_allreduce, bool & isOptimized) {
 
   // This line and the next two lines should be removed and your version of ComputeDotProduct should be used.
   isOptimized = false;
 
-  // return ComputeDotProduct_ref(n, x, y, result, time_allreduce);
-  // return ComputeDotProduct_cuda(n, x, y, result, time_allreduce);
-  return ComputeDotProduct_avx(n, x, y, result, time_allreduce);
+
+  myTICK();
+  // int ierr = ComputeDotProduct_ref(n, x, y, result, time_allreduce);
+  int err = ComputeDotProduct_cuda(n, x, y, result, time_allreduce);
+  // int ierr = ComputeDotProduct_avx(n, x, y, result, time_allreduce);
+  myTOCK(ComputeDotProduct_time);
+
+  return err;
 
 
   // test
