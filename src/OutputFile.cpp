@@ -13,6 +13,7 @@
 //@HEADER
 
 
+#include <cassert>
 #include <fstream>
 #include <list>
 #include <sstream>
@@ -88,7 +89,8 @@ OutputFile::get(const string & key_arg) {
     if ((*it)->key == key_arg)
       return *it;
   }
-
+  // not found the key, should use "add" method to add the key first.
+  assert(0);
   return 0;
 }
 

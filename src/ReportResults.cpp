@@ -412,14 +412,14 @@ void ReportResults(const SparseMatrix & A, int numberOfMgLevels, int numberOfCgS
     extern double ComputeSYMGS_time;
     extern double GenerateProblem_time;
     extern double SetupHalo_time;
-    doc.add("Function Summary","");
-    doc.get("Function Summary")->add("ComputeDotProduct time is",ComputeDotProduct_time);
-    doc.get("Function Summary")->add("ComputeSPMV time is",ComputeSPMV_time);
-    doc.get("Function Summary")->add("ComputeWAXPBY time is",ComputeWAXPBY_time);
-    doc.get("Function Summary")->add("ComputeMG time is",ComputeMG_time);
-    doc.get("Function Summary")->add("ComputeSYMGS time is",ComputeSYMGS_time);
-    doc.get("Function Summary")->add("GenerateProblem time is",GenerateProblem_time);
-    doc.get("Function Summary")->add("SetupHalo time is",SetupHalo_time);
+    doc.add("Function Summary",""); // the key in add should equal to the key in get, and before use get method, you should use add method.
+    doc.get("Function Summary")->add("(ms) ComputeDotProduct time is",ComputeDotProduct_time * 1000);
+    doc.get("Function Summary")->add("(ms) ComputeSPMV time is",ComputeSPMV_time* 1000);
+    doc.get("Function Summary")->add("(ms) ComputeWAXPBY time is",ComputeWAXPBY_time* 1000);
+    doc.get("Function Summary")->add("(ms) ComputeMG time is",ComputeMG_time* 1000);
+    doc.get("Function Summary")->add("(ms) ComputeSYMGS time is",ComputeSYMGS_time* 1000);
+    doc.get("Function Summary")->add("(ms) GenerateProblem time is",GenerateProblem_time* 1000);
+    doc.get("Function Summary")->add("(ms) SetupHalo time is",SetupHalo_time* 1000);
 
     std::string yaml = doc.generate();
 #ifdef HPCG_DEBUG

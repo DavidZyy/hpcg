@@ -53,9 +53,9 @@ int ComputeDotProduct(const local_int_t n, const Vector & x, const Vector & y,
 
 
   myTICK();
-  // int ierr = ComputeDotProduct_ref(n, x, y, result, time_allreduce);
-  int err = ComputeDotProduct_cuda(n, x, y, result, time_allreduce);
-  // int ierr = ComputeDotProduct_avx(n, x, y, result, time_allreduce);
+  int err = ComputeDotProduct_ref(n, x, y, result, time_allreduce);
+  // int err = ComputeDotProduct_cuda(n, x, y, result, time_allreduce);
+  // int err = ComputeDotProduct_avx(n, x, y, result, time_allreduce);
   myTOCK(ComputeDotProduct_time);
 
   return err;
