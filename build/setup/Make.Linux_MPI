@@ -109,6 +109,7 @@ HPCG_LIBS     =
 #
 # HPCG_OPTS     = -DHPCG_NO_OPENMP -DHPCG_NO_MPI -DHPCG_DEBUG -DHPCG_DETAILED_DEBUG
 HPCG_OPTS     = -DHPCG_NO_OPENMP
+# HPCG_OPTS     = 
 #
 # ----------------------------------------------------------------------
 #
@@ -120,7 +121,7 @@ HPCG_DEFS     = $(HPCG_OPTS) $(HPCG_INCLUDES)
 #
 CXX          = mpicxx
 #CXXFLAGS     = $(HPCG_DEFS) -fomit-frame-pointer -O3 -funroll-loops -W -Wall
-CXXFLAGS     = $(HPCG_DEFS) -O3 -ffast-math -ftree-vectorize -ftree-vectorizer-verbose=0 -g -fopenmp -mavx -mfma
+CXXFLAGS     = $(HPCG_DEFS) -O3 -ffast-math -ftree-vectorize -ftree-vectorizer-verbose=0 -g -fopenmp -mavx -mfma -mavx512f
 #
 LINKER       = $(CXX)
 LINKFLAGS    = $(CXXFLAGS)

@@ -46,8 +46,8 @@ int ComputeSPMV( const SparseMatrix & A, Vector & x, Vector & y) {
   A.isSpmvOptimized = false;
 
   myTICK();
-  // int err = ComputeSPMV_ref(A, x, y);
-  int err = ComputeSPMV_avx(A, x, y);
+  int err = ComputeSPMV_ref(A, x, y);
+  // int err = ComputeSPMV_avx(A, x, y);
   myTOCK(ComputeSPMV_time);
 
   return err;

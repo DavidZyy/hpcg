@@ -22,6 +22,7 @@
 #include "ComputeDotProduct_ref.hpp"
 #include "ComputeDotProduct_cuda.hpp"
 #include "ComputeDotProduct_avx.hpp"
+#include "ComputeDotProduct_avx512.hpp"
 #include <cassert>
 #include <cstdio>
 #include <cmath>
@@ -54,8 +55,9 @@ int ComputeDotProduct(const local_int_t n, const Vector & x, const Vector & y,
 
   myTICK();
   int err = ComputeDotProduct_ref(n, x, y, result, time_allreduce);
-  // int err = ComputeDotProduct_cuda(n, x, y, result, time_allreduce);
+  // int err = ComputeDotProduct_cuda(n, x, y, result, time_allreduce); // not usable
   // int err = ComputeDotProduct_avx(n, x, y, result, time_allreduce);
+  // int err = ComputeDotProduct_avx512(n, x, y, result, time_allreduce);
   myTOCK(ComputeDotProduct_time);
 
   return err;

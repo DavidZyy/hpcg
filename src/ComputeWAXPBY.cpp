@@ -66,8 +66,8 @@ int ComputeWAXPBY(const local_int_t n, const double alpha, const Vector & x,
 //   return 0;
 
   myTICK();
-  // int err = ComputeWAXPBY_ref(n, alpha, x, beta, y, w);
-  int err = ComputeWAXPBY_avx(n, alpha, x, beta, y, w);
+  int err = ComputeWAXPBY_ref(n, alpha, x, beta, y, w);
+  // int err = ComputeWAXPBY_avx(n, alpha, x, beta, y, w);
   myTOCK(ComputeWAXPBY_time);
   return err;
 

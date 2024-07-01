@@ -45,21 +45,23 @@ HPCG_DEPS = src/CG.o \
 	    src/GenerateCoarseProblem.o \
 	    src/init.o \
 	    src/finalize.o \
-		src/ComputeDotProduct_cuda.o \
 		src/ComputeDotProduct_avx.o \
+		src/ComputeDotProduct_avx512.o \
 		src/ComputeWAXPBY_avx.o \
 		src/ComputeSPMV_avx.o
 
+# src/ComputeDotProduct_cuda.o
 # These header files are included in many source files, so we recompile every file if one or more of these header is modified.
 PRIMARY_HEADERS = ../src/Geometry.hpp ../src/SparseMatrix.hpp ../src/Vector.hpp ../src/CGData.hpp \
                   ../src/MGData.hpp ../src/hpcg.hpp
 
-CUDA_LIB = -L/usr/local/cuda/lib64 -lcudart
+# CUDA_LIB = -L/usr/local/cuda/lib64 -lcudart
 
 all: bin/xhpcg
 
 bin/xhpcg: src/main.o $(HPCG_DEPS)
-	$(LINKER) $(LINKFLAGS) src/main.o $(HPCG_DEPS) $(HPCG_LIBS) $(CUDA_LIB) -o bin/xhpcg
+# $(LINKER) $(LINKFLAGS) src/main.o $(HPCG_DEPS) $(HPCG_LIBS) $(CUDA_LIB) -o bin/xhpcg
+	$(LINKER) $(LINKFLAGS) src/main.o $(HPCG_DEPS) $(HPCG_LIBS) -o bin/xhpcg
 # nvcc -ccbin clang-14 -Xcompiler $(LINKFLAGS) src/main.o $(HPCG_DEPS) $(HPCG_LIBS) -o bin/xhpcg
 # nvcc -ccbin clang-14  src/main.o $(HPCG_DEPS) $(HPCG_LIBS) -o bin/xhpcg
 
@@ -197,6 +199,8 @@ src/ComputeDotProduct_cuda.o: ../src/ComputeDotProduct_cuda.cu ../src/ComputeDot
 src/ComputeDotProduct_avx.o: ../src/ComputeDotProduct_avx.cpp ../src/ComputeDotProduct_avx.hpp $(PRIMARY_HEADERS)
 	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
 
+src/ComputeDotProduct_avx512.o: ../src/ComputeDotProduct_avx512.cpp ../src/ComputeDotProduct_avx512.hpp $(PRIMARY_HEADERS)
+	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
 
 src/ComputeWAXPBY_avx.o: ../src/ComputeWAXPBY_avx.cpp ../src/ComputeWAXPBY_avx.hpp $(PRIMARY_HEADERS)
 	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
