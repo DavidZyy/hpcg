@@ -19,6 +19,7 @@
  */
 
 #include "OptimizeProblem.hpp"
+#include "SparseMatrix.hpp"
 /*!
   Optimizes the data structures used for CG iteration to increase the
   performance of the benchmark version of the preconditioned CG algorithm.
@@ -34,12 +35,79 @@
   @see GenerateGeometry
   @see GenerateProblem
 */
-int OptimizeProblem(SparseMatrix & A, CGData & data, Vector & b, Vector & x, Vector & xexact) {
 
-  // This function can be used to completely transform any part of the data structures.
-  // Right now it does nothing, so compiling with a check for unused variables results in complaints
+// int OptimizeProblem(SparseMatrix & A, CGData & data, Vector & b, Vector & x, Vector & xexact) {
+// 
+//   // This function can be used to completely transform any part of the data structures.
+//   // Right now it does nothing, so compiling with a check for unused variables results in complaints
+// 
+// #if defined(HPCG_USE_MULTICOLORING)
+//   const local_int_t nrow = A.localNumberOfRows;
+//   std::vector<local_int_t> colors(nrow, nrow); // value `nrow' means `uninitialized'; initialized colors go from 0 to nrow-1
+//   int totalColors = 1;
+//   colors[0] = 0; // first point gets color 0
+// 
+//   // Finds colors in a greedy (a likely non-optimal) fashion.
+// 
+//   for (local_int_t i=1; i < nrow; ++i) {
+//     if (colors[i] == nrow) { // if color not assigned
+//       std::vector<int> assigned(totalColors, 0);
+//       int currentlyAssigned = 0;
+//       const local_int_t * const currentColIndices = A.mtxIndL[i];
+//       const int currentNumberOfNonzeros = A.nonzerosInRow[i];
+// 
+//       for (int j=0; j< currentNumberOfNonzeros; j++) { // scan neighbors
+//         local_int_t curCol = currentColIndices[j];
+//         if (curCol < i) { // if this point has an assigned color (points beyond `i' are unassigned)
+//           if (assigned[colors[curCol]] == 0)
+//             currentlyAssigned += 1;
+//           assigned[colors[curCol]] = 1; // this color has been used before by `curCol' point
+//         } // else // could take advantage of indices being sorted
+//       }
+// 
+//       if (currentlyAssigned < totalColors) { // if there is at least one color left to use
+//         for (int j=0; j < totalColors; ++j)  // try all current colors
+//           if (assigned[j] == 0) { // if no neighbor with this color
+//             colors[i] = j;
+//             break;
+//           }
+//       } else {
+//         if (colors[i] == nrow) {
+//           colors[i] = totalColors;
+//           totalColors += 1;
+//         }
+//       }
+//     }
+//   }
+// 
+//   std::vector<local_int_t> counters(totalColors);
+//   for (local_int_t i=0; i<nrow; ++i)
+//     counters[colors[i]]++;
+// 
+//   // form in-place prefix scan
+//   local_int_t old=counters[0], old0;
+//   for (local_int_t i=1; i < totalColors; ++i) {
+//     old0 = counters[i];
+//     counters[i] = counters[i-1] + old;
+//     old = old0;
+//   }
+//   counters[0] = 0;
+// 
+//   // translate `colors' into a permutation
+//   for (local_int_t i=0; i<nrow; ++i) // for each color `c'
+//     colors[i] = counters[colors[i]]++;
+// #endif
+// 
+//   return 0;
+// }
 
-#if defined(HPCG_USE_MULTICOLORING)
+// Helper function (see OptimizeProblem.hpp for details)
+double OptimizeProblemMemoryUse(const SparseMatrix & A) {
+
+  return 0.0;
+}
+
+void ColorMatrix(SparseMatrix & A) {
   const local_int_t nrow = A.localNumberOfRows;
   std::vector<local_int_t> colors(nrow, nrow); // value `nrow' means `uninitialized'; initialized colors go from 0 to nrow-1
   int totalColors = 1;
@@ -82,26 +150,36 @@ int OptimizeProblem(SparseMatrix & A, CGData & data, Vector & b, Vector & x, Vec
   for (local_int_t i=0; i<nrow; ++i)
     counters[colors[i]]++;
 
-  // form in-place prefix scan
-  local_int_t old=counters[0], old0;
-  for (local_int_t i=1; i < totalColors; ++i) {
-    old0 = counters[i];
-    counters[i] = counters[i-1] + old;
-    old = old0;
+  // my codes: assign to A's fields about the colors
+  A.colors = new int[nrow];
+  A.colorPtr = new int[totalColors + 1];
+  A.nColors = totalColors;
+
+  int colors_ptr = 0;
+  for (local_int_t i=0; i < totalColors; ++i) {
+    for (local_int_t j=0; j < nrow; ++j) {
+      if (colors[j] == i) {
+        A.colors[colors_ptr++] = j;
+      }
+    }
   }
-  counters[0] = 0;
 
-  // translate `colors' into a permutation
-  for (local_int_t i=0; i<nrow; ++i) // for each color `c'
-    colors[i] = counters[colors[i]]++;
-#endif
-
-  return 0;
+  A.colorPtr[0] = 0;
+  for (local_int_t i=1; i < totalColors + 1; ++i) {
+    A.colorPtr[i] = counters[i-1] + A.colorPtr[i-1];
+  }
 }
 
-// Helper function (see OptimizeProblem.hpp for details)
-double OptimizeProblemMemoryUse(const SparseMatrix & A) {
+int OptimizeProblem(SparseMatrix & A, CGData & data, Vector & b, Vector & x, Vector & xexact) {
+  // This function can be used to completely transform any part of the data structures.
+  // Right now it does nothing, so compiling with a check for unused variables results in complaints
+  SparseMatrix * Aptr = &A;
 
-  return 0.0;
+  // coloring A and its Coarse grid matrix
+  while (Aptr != 0) {
+    ColorMatrix(*Aptr);
+    Aptr = Aptr->Ac;
+  }
 
+  return 0;
 }

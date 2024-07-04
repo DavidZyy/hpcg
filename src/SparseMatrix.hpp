@@ -63,6 +63,11 @@ struct SparseMatrix_STRUCT {
   mutable MGData * mgData; // Pointer to the coarse level data for this fine matrix
   void * optimizationData;  // pointer that can be used to store implementation-specific data
 
+  // new added for coloring
+  int *colors; // record all color 0 rows first, then color 1 rows, etc.
+  int *colorPtr; // colorPtr[i] is the index of the first row with color i
+  int nColors; // number of colors
+
 #ifndef HPCG_NO_MPI
   local_int_t numberOfExternalValues; //!< number of entries that are external to this process
   int numberOfSendNeighbors; //!< number of neighboring processes that will be send local data
@@ -114,6 +119,10 @@ inline void InitializeSparseMatrix(SparseMatrix & A, Geometry * geom) {
 #endif
   A.mgData = 0; // Fine-to-coarse grid transfer initially not defined.
   A.Ac =0;
+
+  // coloring
+  A.colors = 0;
+  A.colorPtr = 0;
   return;
 }
 
@@ -179,6 +188,10 @@ inline void DeleteMatrix(SparseMatrix & A) {
   if (A.geom!=0) { DeleteGeometry(*A.geom); delete A.geom; A.geom = 0;}
   if (A.Ac!=0) { DeleteMatrix(*A.Ac); delete A.Ac; A.Ac = 0;} // Delete coarse matrix
   if (A.mgData!=0) { DeleteMGData(*A.mgData); delete A.mgData; A.mgData = 0;} // Delete MG data
+
+  // coloring
+  if (A.colors!=0) delete [] A.colors;
+  if (A.colorPtr!=0) delete [] A.colorPtr;
   return;
 }
 

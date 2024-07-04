@@ -20,6 +20,7 @@
 
 #include "ComputeMG.hpp"
 #include "ComputeMG_ref.hpp"
+#include "ComputeMG_new.hpp"
 #include "mytimer.hpp"
 /*!
   @param[in] A the known system matrix
@@ -36,7 +37,8 @@ int ComputeMG(const SparseMatrix  & A, const Vector & r, Vector & x) {
   // This line and the next two lines should be removed and your version of ComputeSYMGS should be used.
   A.isMgOptimized = false;
   myTICK();
-  int err = ComputeMG_ref(A, r, x);
+  // int err = ComputeMG_ref(A, r, x);
+  int err = ComputeMG_new(A, r, x);
   myTOCK(ComputeMG_time);
   return err;
 }

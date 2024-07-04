@@ -121,7 +121,8 @@ HPCG_DEFS     = $(HPCG_OPTS) $(HPCG_INCLUDES)
 #
 CXX          = mpicxx
 #CXXFLAGS     = $(HPCG_DEFS) -fomit-frame-pointer -O3 -funroll-loops -W -Wall
-CXXFLAGS     = $(HPCG_DEFS) -O3 -ffast-math -ftree-vectorize -ftree-vectorizer-verbose=0 -g -fopenmp -mavx -mfma -mavx512f
+#CXXFLAGS     = $(HPCG_DEFS) -O3 -ffast-math -ftree-vectorize -ftree-vectorizer-verbose=0 -g -fopenmp -mavx -mfma -mavx512f
+CXXFLAGS     = $(HPCG_DEFS) -O0 -ffast-math -ftree-vectorize -ftree-vectorizer-verbose=0 -g -fopenmp -mavx -mfma
 #
 LINKER       = $(CXX)
 LINKFLAGS    = $(CXXFLAGS)

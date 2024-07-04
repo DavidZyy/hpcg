@@ -34,9 +34,11 @@ HPCG_DEPS = src/CG.o \
 	    src/ComputeSPMV_ref.o \
 	    src/ComputeSYMGS.o \
 	    src/ComputeSYMGS_ref.o \
+	    src/ComputeSYMGS_new.o \
 	    src/ComputeWAXPBY.o \
 	    src/ComputeWAXPBY_ref.o \
 	    src/ComputeMG_ref.o \
+	    src/ComputeMG_new.o \
 	    src/ComputeMG.o \
 	    src/ComputeProlongation_ref.o \
 	    src/ComputeRestriction_ref.o \
@@ -163,6 +165,9 @@ src/ComputeSYMGS.o: ../src/ComputeSYMGS.cpp ../src/ComputeSYMGS.hpp $(PRIMARY_HE
 src/ComputeSYMGS_ref.o: ../src/ComputeSYMGS_ref.cpp ../src/ComputeSYMGS_ref.hpp $(PRIMARY_HEADERS)
 	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
 
+src/ComputeSYMGS_new.o: ../src/ComputeSYMGS_new.cpp ../src/ComputeSYMGS_new.hpp $(PRIMARY_HEADERS)
+	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
+
 src/ComputeWAXPBY.o: ../src/ComputeWAXPBY.cpp ../src/ComputeWAXPBY.hpp $(PRIMARY_HEADERS)
 	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
 
@@ -170,6 +175,9 @@ src/ComputeWAXPBY_ref.o: ../src/ComputeWAXPBY_ref.cpp ../src/ComputeWAXPBY_ref.h
 	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
 
 src/ComputeMG_ref.o: ../src/ComputeMG_ref.cpp ../src/ComputeMG_ref.hpp $(PRIMARY_HEADERS)
+	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
+
+src/ComputeMG_new.o: ../src/ComputeMG_new.cpp ../src/ComputeMG_new.hpp $(PRIMARY_HEADERS)
 	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
 
 src/ComputeMG.o: ../src/ComputeMG.cpp ../src/ComputeMG.hpp $(PRIMARY_HEADERS)

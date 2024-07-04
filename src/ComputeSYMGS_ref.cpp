@@ -75,7 +75,7 @@ int ComputeSYMGS_ref( const SparseMatrix & A, const Vector & r, Vector & x) {
       local_int_t curCol = currentColIndices[j];
       sum -= currentValues[j] * xv[curCol];
     }
-    sum += xv[i]*currentDiagonal; // Remove diagonal contribution from previous loop
+    sum += xv[i]*currentDiagonal; // Remove diagonal contribution from previous loop(zyy: the previous loop substracts the diagonal contribution, which should not occur.)
 
     xv[i] = sum/currentDiagonal;
 
