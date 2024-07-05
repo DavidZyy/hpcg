@@ -45,6 +45,9 @@ int ComputeRestriction_ref(const SparseMatrix & A, const Vector & rf) {
   local_int_t * f2c = A.mgData->f2cOperator;
   local_int_t nc = A.mgData->rc->localLength;
 
+  // for debug
+  // std::vector<local_int_t> f2cOperatorVec(f2c, f2c + A.localNumberOfRows);
+
 #ifndef HPCG_NO_OPENMP
 #pragma omp parallel for
 #endif

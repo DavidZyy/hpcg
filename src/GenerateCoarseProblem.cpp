@@ -18,6 +18,7 @@
  HPCG routine
  */
 
+#include "Geometry.hpp"
 #ifndef HPCG_NO_OPENMP
 #include <omp.h>
 #endif
@@ -80,6 +81,9 @@ void GenerateCoarseProblem(const SparseMatrix & Af) {
       } // end iy loop
     } // end even iz if statement
   } // end iz loop
+
+  // for debug
+  // std::vector<local_int_t> f2cOperatorVec(f2cOperator, f2cOperator + Af.localNumberOfRows);
 
   // Construct the geometry and linear system
   Geometry * geomc = new Geometry;

@@ -175,6 +175,9 @@ int OptimizeProblem(SparseMatrix & A, CGData & data, Vector & b, Vector & x, Vec
   // Right now it does nothing, so compiling with a check for unused variables results in complaints
   SparseMatrix * Aptr = &A;
 
+  // for debug
+  // std::vector<double> xVec(x.values, x.values + x.localLength);
+
   // coloring A and its Coarse grid matrix
   while (Aptr != 0) {
     ColorMatrix(*Aptr);

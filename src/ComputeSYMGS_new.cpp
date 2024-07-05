@@ -24,8 +24,9 @@ int ComputeSYMGS_new(const SparseMatrix &A, const Vector &r, Vector &x) {
 
   const int nColors = A.nColors;
 
-  std::vector<int> colorsVector(colors, colors + nrow);
-  std::vector<int> colorPtrVector(colorPtr, colorPtr + nColors + 1);
+  // for debug
+  // std::vector<int> colorsVector(colors, colors + nrow);
+  // std::vector<int> colorPtrVector(colorPtr, colorPtr + nColors + 1);
 
   // Forward sweep
   for (int color = 0; color < nColors; ++color) {
