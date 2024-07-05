@@ -108,8 +108,8 @@ HPCG_LIBS     =
 #    *) Not generate debugging output.
 #
 # HPCG_OPTS     = -DHPCG_NO_OPENMP -DHPCG_NO_MPI -DHPCG_DEBUG -DHPCG_DETAILED_DEBUG
-# HPCG_OPTS     = -DHPCG_NO_OPENMP
-HPCG_OPTS     = 
+HPCG_OPTS     = -DHPCG_NO_OPENMP
+#HPCG_OPTS     = 
 #
 # ----------------------------------------------------------------------
 #

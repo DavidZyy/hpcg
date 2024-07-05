@@ -67,6 +67,7 @@ struct SparseMatrix_STRUCT {
   int *colors; // record all color 0 rows first, then color 1 rows, etc.
   int *colorPtr; // colorPtr[i] is the index of the first row with color i
   int nColors; // number of colors
+  int *rowIdx_ro; // i means the old row index, rowIdx_ro[i] means the reordered row index. use it to query the reordered row index.
 
 #ifndef HPCG_NO_MPI
   local_int_t numberOfExternalValues; //!< number of entries that are external to this process
@@ -123,6 +124,7 @@ inline void InitializeSparseMatrix(SparseMatrix & A, Geometry * geom) {
   // coloring
   A.colors = 0;
   A.colorPtr = 0;
+  A.rowIdx_ro = 0;
   return;
 }
 
@@ -192,6 +194,7 @@ inline void DeleteMatrix(SparseMatrix & A) {
   // coloring
   if (A.colors!=0) delete [] A.colors;
   if (A.colorPtr!=0) delete [] A.colorPtr;
+  if (A.rowIdx_ro!=0) delete [] A.rowIdx_ro;
   return;
 }
 

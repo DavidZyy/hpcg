@@ -19,7 +19,11 @@
  */
 
 #include "OptimizeProblem.hpp"
+#include "Geometry.hpp"
+#include "MGData.hpp"
 #include "SparseMatrix.hpp"
+#include "Vector.hpp"
+#include <cstddef>
 /*!
   Optimizes the data structures used for CG iteration to increase the
   performance of the benchmark version of the preconditioned CG algorithm.
@@ -107,7 +111,7 @@ double OptimizeProblemMemoryUse(const SparseMatrix & A) {
   return 0.0;
 }
 
-void ColorMatrix(SparseMatrix & A) {
+void ColorMatrix(SparseMatrix & A, Vector *bPtr, SparseMatrix * LastAptr) {
   const local_int_t nrow = A.localNumberOfRows;
   std::vector<local_int_t> colors(nrow, nrow); // value `nrow' means `uninitialized'; initialized colors go from 0 to nrow-1
   int totalColors = 1;
@@ -168,19 +172,125 @@ void ColorMatrix(SparseMatrix & A) {
   for (local_int_t i=1; i < totalColors + 1; ++i) {
     A.colorPtr[i] = counters[i-1] + A.colorPtr[i-1];
   }
+
+
+  // a test version of coloring reorder.
+
+//////////////////////////// reorder A /////////////////////////////////
+  // the following codes are refered from GenerateProblem.cpp: 75
+  // which should be changed when reorder rows.
+  local_int_t numberOfNonzerosPerRow = 27;
+  char * nonzerosInRow_ro = new char[A.localNumberOfRows];
+  local_int_t ** mtxIndL_ro = new local_int_t*[A.localNumberOfRows];
+  double ** matrixValues_ro = new double*[A.localNumberOfRows];
+  A.rowIdx_ro = new local_int_t[A.localNumberOfRows];
+
+  for (local_int_t i=0; i< A.localNumberOfRows; ++i) {
+    mtxIndL_ro[i] = new local_int_t[numberOfNonzerosPerRow];
+    matrixValues_ro[i] = new double[numberOfNonzerosPerRow];
+  }
+
+  // reorder rows of A
+  local_int_t rowPtr = 0;
+  for (int i=0; i < totalColors; i++) {
+    for (int j = 0; j < A.localNumberOfRows; j++) {
+      if (colors[j] == i) {
+        nonzerosInRow_ro[rowPtr] = A.nonzerosInRow[j];
+        for (int k = 0; k < nonzerosInRow_ro[rowPtr]; k++) {
+          mtxIndL_ro[rowPtr][k] = A.mtxIndL[j][k];
+          matrixValues_ro[rowPtr][k] = A.matrixValues[j][k];
+        }
+        A.rowIdx_ro[j] = rowPtr;
+        rowPtr++;
+      }
+    }
+  }
+
+  // reorder columns of A, only consider 1 process now, not consider the case of multiple processes.
+  local_int_t colPtr = 0;
+  for (int i=0; i < totalColors; i++) {
+    for (int j = 0; j < A.localNumberOfRows; j++) { // Columns == Rows??
+    // for (int j = 0; j < A.localNumberOfColumns; j++) {
+      if (colors[j] == i) {
+        // search all rows of mtxIndL_ro, if idx is j, change it to colPtr
+        for (int k = 0; k < A.localNumberOfRows; k++) {
+          for (int l = 0; l < nonzerosInRow_ro[k]; l++) {
+            if (mtxIndL_ro[k][l] == j) {
+              mtxIndL_ro[k][l] = colPtr;
+            }
+          }
+        }
+        colPtr++;
+      }
+    }
+  }
+
+  // replace A's structure
+  for (local_int_t i = 0; i< A.localNumberOfRows; ++i) {
+    delete [] A.matrixValues[i];
+    delete [] A.mtxIndL[i];
+  }
+  delete [] A.nonzerosInRow;
+  delete [] A.mtxIndL;
+  delete [] A.matrixValues;
+
+  A.nonzerosInRow = nonzerosInRow_ro;
+  A.mtxIndL = mtxIndL_ro;
+  A.matrixValues = matrixValues_ro;
+
+//////////////////////////// reorder b /////////////////////////////////
+  if (bPtr) {
+    // for first level A of multigrid
+    Vector b = *bPtr;
+    double * bv = new double[b.localLength];
+    local_int_t bRowPtr = 0;
+    for (int i=0; i < totalColors; i++) {
+      for (int j = 0; j < A.localNumberOfRows; j++) {
+        if (colors[j] == i) {
+          bv[bRowPtr++] = b.values[j];
+        }
+      }
+    }
+
+    delete [] b.values;
+    // b.values = bv;
+    bPtr->values = bv;
+  }
+
+//////////////////////////// reorder f2c /////////////////////////////////
+  if (LastAptr) {
+    // not the firt level of multigrid
+    // remap LastAptr->mgData->f2cOperator
+    local_int_t * f2c = LastAptr->mgData->f2cOperator;
+    local_int_t * f2c_ro = new local_int_t[LastAptr->localNumberOfRows];
+    for (int i=0; i<LastAptr->mgData->rc->localLength; i++) {
+      // f2c_ro[LastAptr->rowIdx_ro[i]] = A.rowIdx_ro[f2c[i]]; // false
+      f2c_ro[A.rowIdx_ro[i]] = LastAptr->rowIdx_ro[f2c[i]]; // true
+    }
+
+    delete [] f2c;
+    LastAptr->mgData->f2cOperator = f2c_ro;
+  }
+
 }
 
+/**
+ * only A and b need to reorder, x and xexact are not needed. 
+ */
 int OptimizeProblem(SparseMatrix & A, CGData & data, Vector & b, Vector & x, Vector & xexact) {
   // This function can be used to completely transform any part of the data structures.
   // Right now it does nothing, so compiling with a check for unused variables results in complaints
   SparseMatrix * Aptr = &A;
+  SparseMatrix * LastAptr= NULL;
 
   // for debug
   // std::vector<double> xVec(x.values, x.values + x.localLength);
 
   // coloring A and its Coarse grid matrix
   while (Aptr != 0) {
-    ColorMatrix(*Aptr);
+    Vector *bPtr = (Aptr == &A ? &b : NULL);
+    ColorMatrix(*Aptr, bPtr, LastAptr);
+    LastAptr = Aptr;
     Aptr = Aptr->Ac;
   }
 
