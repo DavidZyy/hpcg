@@ -23,6 +23,7 @@
 #include "MGData.hpp"
 #include "SparseMatrix.hpp"
 #include "Vector.hpp"
+#include "WriteProblem.hpp"
 #include <cstddef>
 /*!
   Optimizes the data structures used for CG iteration to increase the
@@ -207,19 +208,32 @@ void ColorMatrix(SparseMatrix & A, Vector *bPtr, SparseMatrix * LastAptr) {
   }
 
   // reorder columns of A, only consider 1 process now, not consider the case of multiple processes.
+  // should based on the reordered rows when reorder columns
+  int k,l;
   local_int_t colPtr = 0;
-  for (int i=0; i < totalColors; i++) {
-    for (int j = 0; j < A.localNumberOfRows; j++) { // Columns == Rows??
+  for (int i=0; i < totalColors; i++) { // search for all colors
+    for (int j = 0; j < A.localNumberOfRows; j++) { // search for all columns Columns == Rows??
     // for (int j = 0; j < A.localNumberOfColumns; j++) {
-      if (colors[j] == i) {
+      if (colors[j] == i) { // if column j is in color i
+
+        // search for all column j, change it to colPtr
         // search all rows of mtxIndL_ro, if idx is j, change it to colPtr
-        for (int k = 0; k < A.localNumberOfRows; k++) {
-          for (int l = 0; l < nonzerosInRow_ro[k]; l++) {
-            if (mtxIndL_ro[k][l] == j) {
-              mtxIndL_ro[k][l] = colPtr;
+        // for (k = 0; k < A.localNumberOfRows; k++) {
+        //   for (l = 0; l < nonzerosInRow_ro[k]; l++) {
+        //     if (mtxIndL_ro[k][l] == j && j != colPtr) {
+        //       mtxIndL_ro[k][l] = colPtr;
+        //     }
+        //   }
+        // }
+
+        for (k = 0; k < A.localNumberOfRows; k++) {
+          for (l = 0; l < A.nonzerosInRow[k]; l++) {
+            if (A.mtxIndL[k][l] == j && j != colPtr) {
+              mtxIndL_ro[A.rowIdx_ro[k]][l] = colPtr;
             }
           }
         }
+
         colPtr++;
       }
     }
@@ -232,6 +246,7 @@ void ColorMatrix(SparseMatrix & A, Vector *bPtr, SparseMatrix * LastAptr) {
   }
   delete [] A.nonzerosInRow;
   delete [] A.mtxIndL;
+  // delete [] mtxIndL_ro;
   delete [] A.matrixValues;
 
   A.nonzerosInRow = nonzerosInRow_ro;
@@ -272,6 +287,7 @@ void ColorMatrix(SparseMatrix & A, Vector *bPtr, SparseMatrix * LastAptr) {
     LastAptr->mgData->f2cOperator = f2c_ro;
   }
 
+  WriteA(A);
 }
 
 /**

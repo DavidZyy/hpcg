@@ -18,6 +18,7 @@
  HPCG routine
  */
 
+#include <cassert>
 #include <cstdio>
 #include "WriteProblem.hpp"
 
@@ -75,9 +76,11 @@ int WriteProblem( const Geometry & geom, const SparseMatrix & A,
     const int currentNumberOfNonzeros = A.nonzerosInRow[i];
     for (int j=0; j< currentNumberOfNonzeros; j++)
 #ifdef HPCG_NO_LONG_LONG
-      fprintf(fA, " %d %d %22.16e\n",i+1,(global_int_t)(currentRowIndices[j]+1),currentRowValues[j]);
+      // fprintf(fA, " %d %d %22.16e\n",i+1,(global_int_t)(currentRowIndices[j]+1),currentRowValues[j]);
+      fprintf(fA, " %d %d %22.16e\n",i,(global_int_t)(currentRowIndices[j]),currentRowValues[j]);
 #else
-      fprintf(fA, " %lld %lld %22.16e\n",i+1,(global_int_t)(currentRowIndices[j]+1),currentRowValues[j]);
+      // fprintf(fA, " %lld %lld %22.16e\n",i+1,(global_int_t)(currentRowIndices[j]+1),currentRowValues[j]);
+      fprintf(fA, " %lld %lld %22.16e\n",i,(global_int_t)(currentRowIndices[j]),currentRowValues[j]);
 #endif
     fprintf(fx, "%22.16e\n",x.values[i]);
     fprintf(fxexact, "%22.16e\n",xexact.values[i]);
@@ -88,5 +91,39 @@ int WriteProblem( const Geometry & geom, const SparseMatrix & A,
   fclose(fx);
   fclose(fxexact);
   fclose(fb);
+  return 0;
+}
+
+// NOTE !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+// only one process is supported!!!!
+// use A.mtxIndL or use A.mtxIndG !!!!!!!!!!!
+int WriteA(const SparseMatrix & A) {
+  const global_int_t nrow = A.totalNumberOfRows;
+
+  FILE * fA = 0;
+  char name[50];
+  sprintf(name, "A-%lld.dat", nrow);
+  fA = fopen(name, "w");
+
+  assert(fA);
+
+  for (global_int_t i=0; i< nrow; i++) {
+    const double * const currentRowValues = A.matrixValues[i];
+
+    // const global_int_t * const currentRowIndices = A.mtxIndG[i];
+    const local_int_t * const currentRowIndices = A.mtxIndL[i];
+
+    const int currentNumberOfNonzeros = A.nonzerosInRow[i];
+    for (int j=0; j< currentNumberOfNonzeros; j++)
+#ifdef HPCG_NO_LONG_LONG
+      // fprintf(fA, " %d %d %22.16e\n",i+1,(global_int_t)(currentRowIndices[j]+1),currentRowValues[j]);
+      fprintf(fA, " %d %d %22.16e\n",i,(global_int_t)(currentRowIndices[j]),currentRowValues[j]);
+#else
+      // fprintf(fA, " %lld %lld %22.16e\n",i+1,(global_int_t)(currentRowIndices[j]+1),currentRowValues[j]);
+      fprintf(fA, " %lld %lld %22.16e\n",i,(global_int_t)(currentRowIndices[j]),currentRowValues[j]);
+#endif
+  }
+
+  fclose(fA);
   return 0;
 }
