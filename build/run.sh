@@ -1,5 +1,8 @@
 cd bin
-mpirun -np 1 ./xhpcg 16 16 16
+
+export OMP_NUM_THREADS=2
+mpirun -np 1 ./xhpcg 64 64 64
+
 # mpirun -np 2 ./xhpcg 16 16 16
 # mpirun -np 4 ./xhpcg 16 16 16
 # mpirun -np 8 ./xhpcg 16 16 16

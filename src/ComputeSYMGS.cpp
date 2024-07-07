@@ -54,8 +54,8 @@ int ComputeSYMGS( const SparseMatrix & A, const Vector & r, Vector & x) {
 
   // This line and the next two lines should be removed and your version of ComputeSYMGS should be used.
   myTICK();
-  // int err = ComputeSYMGS_ref(A, r, x);
-  int err = ComputeSYMGS_new(A, r, x);
+  int err = ComputeSYMGS_ref(A, r, x);
+  // int err = ComputeSYMGS_new(A, r, x);
   myTOCK(ComputeSYMGS_time);
   return err;
 

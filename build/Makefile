@@ -14,6 +14,7 @@ HPCG_DEPS = src/CG.o \
 	    src/GenerateGeometry.o \
 	    src/GenerateProblem.o \
 	    src/GenerateProblem_ref.o \
+	    src/GenerateProblem_new.o \
 	    src/CheckProblem.o \
 	    src/MixedBaseCounter.o \
 	    src/OptimizeProblem.o \
@@ -97,6 +98,9 @@ src/GenerateProblem.o: ../src/GenerateProblem.cpp ../src/GenerateProblem.hpp $(P
 	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
 
 src/GenerateProblem_ref.o: ../src/GenerateProblem_ref.cpp ../src/GenerateProblem_ref.hpp $(PRIMARY_HEADERS)
+	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
+
+src/GenerateProblem_new.o: ../src/GenerateProblem_new.cpp ../src/GenerateProblem_new.hpp $(PRIMARY_HEADERS)
 	$(CXX) -c $(CXXFLAGS) -I../src $< -o $@
 
 src/CheckProblem.o: ../src/CheckProblem.cpp ../src/CheckProblem.hpp $(PRIMARY_HEADERS)

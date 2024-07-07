@@ -29,7 +29,7 @@
 #include "GenerateProblem.hpp"
 #include "GenerateProblem_ref.hpp"
 #include "mytimer.hpp"
-
+#include "GenerateProblem_new.hpp"
 
 /*!
   Routine to generate a sparse matrix, right hand side, initial guess, and exact solution.
@@ -51,6 +51,7 @@ void GenerateProblem(SparseMatrix & A, Vector * b, Vector * x, Vector * xexact) 
   // specific nature of the sparsity pattern may not be explicitly used.
   myTICK();
   GenerateProblem_ref(A, b, x, xexact);
+  //GenerateProblem_new(A, b, x, xexact);
   myTOCK(GenerateProblem_time);
 
   return;
